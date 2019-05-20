@@ -19,7 +19,7 @@ class Blog(models.Model):
         return self.body[:40] + '...'#Cuts down the amount of text shown on the blog
 
 class Comments(models.Model):
-    blog = models.ForeignKey(Blog, related_name='comment')
+    blog = models.ForeignKey(Blog, related_name='comment', on_delete=models.CASCADE)
     user = models.CharField(max_length=300)#comment user
     body = models.TextField()#main text
     created = models.DateTimeField(auto_now_add = True)#Add time comment made
