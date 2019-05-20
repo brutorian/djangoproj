@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Signup{% endblock title %}
+
+{% block nav %}
+  
+
+<div id="sidebar">
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/poll/">Polls</a> </li>
+  <li><a href="/support/">Support Us</a></li>
+  <li><a href="/accounts/signup/">Sign Up</a></li>
+  <li><a href="/accounts/login/">Login</a></li>
+  <li><a href="/contact/contact/">Contact Us</a></li>
+</ul>
+
+<div id="sidebar-btn"><!--Sidebar icon-->
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+</div>
+
+<script>/*The jQuery will help to open and close the side nav bar*/
+  $(document).ready(function(){
+    $('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');/*--This will allow the user to open and close the side bar when clicking on the icon--*/
+  });
+  });
+</script>
+{% endblock nav %}
+
+
+{% block content %}
+<div style="max-width: 500px; margin: auto; text-align: center">
+<h2 style="text-align: center; font-size: 45px;">Sign up</h2>
+<form class="site-form "method="post">
+  {% csrf_token %}
+  {{ form }}<!--signup form-->
+    <br>
+  <button type="submit" style="background: #FC5C00; border: 0; color: #fff; font-size: 1.3em; display: block;margin: 0 auto;">Sign Up!</button>
+</form>
+</div>
+{% endblock content %}
+
+{% block footer %}
+  <footer style="text-align: center">
+        <p>© 2018 UniAttract</p>
+    </footer>
+{% endblock footer %}

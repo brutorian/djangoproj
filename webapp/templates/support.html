@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Support{% endblock title %}
+
+{% block nav %}
+<div id="sidebar">
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/poll/">Polls</a> </li>
+  <li><a href="/support/">Support Us</a></li>
+  <li><a href="/accounts/signup/">Sign Up</a></li>
+  <li><a href="/accounts/login/">Login</a></li>
+  <li><a href="/contact/contact/">Contact Us</a></li>
+</ul>
+
+<div id="sidebar-btn"><!--Sidebar icon-->
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+</div>
+
+<script>/*The jQuery will help to open and close the side nav bar*/
+  $(document).ready(function(){
+    $('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');/*--This will allow the user to open and close the side bar when clicking on the icon--*/
+  });
+  });
+</script>
+{% endblock nav %}
+
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+
+
+
+
+{% block content %}
+<div class="support-header">
+  <h1>Why not support us?</h1>
+</div>
+
+<div class="Piechart">
+  <h3 style="text-align:center">Upcoming Features Status</h3>
+<svg style="display: block;margin: 0 auto;">
+  <g id="canvas">
+    <g id="art" />
+    <g id="labels" />
+  </g>
+</svg>
+</div>
+
+<script type="text/javascript">
+  //chart data
+var data = [
+  {name: 'Upcoming', value: 5},
+  {name: 'Completed', value: 1},
+  {name: 'TBA', value: 12},
+  {name: 'Unfinished', value: 3} 
+];
+
+data.sort(function(a, b){
+    return b.value - a.value;
+});
+
+//svg for chart
+var svg = d3.select('svg'),
+    canvas = d3.select('#canvas'),
+    art = d3.select('#art'),
+    labels = d3.select('#labels');
+
+var d3Pie = d3.layout.pie();
+d3Pie.value(function(d) {
+    return d.value;
+});
+
+// chart dimension
+var piearc = {
+  height: 500,
+  width: 800,
+  innerRadius: 50,
+  outerRadius: 150,
+  labelRadius: 180
+};
+
+svg.attr({
+  height: piearc.height,
+  width: piearc.width
+});
+//postion pie in centre of its width and height
+canvas.attr('transform', 'translate(' + (piearc.width/2) + ', ' + (piearc.height/2) + ')');
+
+//provides the donut shape to the arc
+var pieData = d3Pie(data);
+
+var pieArc = d3.svg.arc()
+                .innerRadius(piearc.innerRadius)
+                .outerRadius(piearc.outerRadius);
+
+//set colours for the pie
+var colors = d3.scale.category10();
+
+var showarc = art.selectAll('.wedge').data(pieData).enter();
+
+showarc.append('path')
+            .attr('class', 'wedge')
+            .attr('d', pieArc)
+            .style('fill', function(d, i){ return colors(i); });
+
+
+
+var enteringLabels = labels.selectAll('.label').data(pieData).enter();
+var labelGroups = enteringLabels.append('g').attr('class', 'label');
+
+var lines = labelGroups.append('line').attr({
+  x1: function(d, i) {
+    return pieArc.centroid(d)[0];
+  },
+  y1: function(d) {
+    return pieArc.centroid(d)[1];
+  },
+  x2: function(d) {
+    var centroid = pieArc.centroid(d),
+        midAngle = Math.atan2(centroid[1], centroid[0]);
+    return Math.cos(midAngle) * piearc.labelRadius;
+  },
+  y2: function(d) {
+    var centroid = pieArc.centroid(d),
+        midAngle = Math.atan2(centroid[1], centroid[0]);
+    return Math.sin(midAngle) * piearc.labelRadius;
+  },
+  
+  'class': 'label-line',
+  'stroke': function(d, i) {
+    return colors(i);
+  }
+});
+
+var textLabels = labelGroups.append('text').attr({
+    x: function(d, i) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          x = Math.cos(midAngle) * piearc.labelRadius,
+          sign = x > 0? 1: -1;
+      return x + (5*sign);
+    },
+  
+    y: function(d, i) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          y = Math.sin(midAngle) * piearc.labelRadius;
+      return y;
+    },
+  
+    'text-anchor': function(d, i) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          x = Math.cos(midAngle) * piearc.labelRadius;
+      return x > 0? 'start' : 'end';
+    },
+  
+    'class': 'label-text'
+}).text(function(d){
+  return d.data.name + ' ( ' + d.data.value + ' ) ';;
+})
+
+
+// relaxing help to space out the labels
+var alpha = 0.5,
+    spacing = 20;
+
+function relax() {
+  var again = false;
+  textLabels.each(function() {
+       var a = this,
+           da = d3.select(a),
+           y1 = da.attr('y');
+        textLabels.each(function() {
+           var b = this;
+            if (a === b) {
+              return ;
+            }
+          
+            db = d3.select(b);
+            if (da.attr('text-anchor') !== db.attr('text-anchor')) {
+              return ;
+            }
+          
+            var y2 = db.attr('y');
+            varY = y1 - y2;
+            
+            if (Math.abs(varY) > spacing) {
+              return ;
+            }
+          
+            again = true;
+            sign = varY > 0? 1: -1;
+            var adjust = sign * alpha;
+            da.attr('y', +y1 + adjust);
+            db.attr('y', +y2 - adjust);
+        });
+  });
+  
+  if (again) {
+      var labelElements = textLabels[0];
+      lines.attr('y2', function(d, i) {
+          var labelForLine = d3.select(labelElements[i]);
+          return labelForLine.attr('y');
+      });
+  }
+}
+
+relax();
+</script>
+
+<br>
+
+
+<div class="container-1"><p>We are happy to announce we have new features on their way which will revolutionise the way you use the Unicode Attractor app.</p>
+ <p>But we have a favour to ask you ask. As a small company we rely mainly on donations from our users (You Guys!). With donations we are able to complete upcoming features faster and also continue our development of the app. We know this is a lot to ask for but all donations go solely into improving the app and its features.Thank You And Have A Great Day!</p></div>
+ <p style="font-size: 1.5em; text-align: center">Donate £19.99</p>
+<button type="submit" style="background: #FC5C00; border: 0; color: #fff; font-size: 1.5em; display: block;margin: 0 auto; cursor: pointer" ><a href={% url "payment:payment"%}>Donate</a></button><!--redirects to stripe pay-->
+{% endblock content %}
+
+<br>
+
+{% block footer %}
+  <footer style="text-align: center; margin-top: 60px">
+        <p>© 2018 UniAttract</p>
+    </footer>
+{% endblock footer %}

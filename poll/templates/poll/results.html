@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Results{% endblock title %}
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+{% block content %}
+<h1 class="question-title" >{{ question.question_text }}</h1>
+    <ul style="text-align: center; font-family: 'PT Mono', monospace">
+    {% for choice in question.choice_set.all %}
+    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li><!--pluralises vote into votes-->
+    {% endfor %}
+    </ul>
+
+    <a class="vote-again" href={% url "poll:detail_poll" question.id %} >Vote Again?</a><!--allow the user to retake question-->
+{% endblock content %}
+
+
+{% block footer %}
+  <footer style="text-align: center">
+        <p>© 2018 UniAttract</p>
+    </footer>
+{% endblock footer %}

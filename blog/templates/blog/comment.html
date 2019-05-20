@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Leave a Comment{% endblock title %}
+
+{% block content %}
+  <div class="comment-form">
+    <h1>Comment</h1>
+    <form method="POST">{% csrf_token %}
+    {{ form.as_p }}<!--comment form-->
+    <button type="submit">Click Here</button>
+    </form>
+  </div>
+{% endblock %}
+

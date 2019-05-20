@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock title %}
+
+{% block nav %}
+   <div id="sidebar">
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/poll/">Polls</a> </li>
+  <li><a href="/support/">Support Us</a></li>
+  <li><a href="/accounts/signup/">Sign Up</a></li>
+  <li><a href="/accounts/login/">Login</a></li>
+  <li><a href="/contact/contact/">Contact Us</a></li>
+</ul>
+<div id="sidebar-btn"><!--Sidebar icon-->
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+</div>
+
+<script>/*The jQuery will help to open and close the side nav bar*/
+  $(document).ready(function(){
+    $('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');/*--This will allow the user to open and close the side bar when clicking on the icon--*/
+  });
+  });
+</script>
+{% endblock nav %}
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+
+
+
+{% block content %}
+<div class="about-header">
+  <h1>About Us</h1>
+</div>
+
+<div class="container-1">
+<h1 id="about-title">Who are we?</h1>
+<br>
+<p>We are a small company of around thirty crazy people. We're a team built on the love of coding and developing new solutions to any problem that comes before us. We strive to create the best enviroment and technological solutions that are possible.</p>
+<p>As a small business we've come a long way starting from 2010 to now. We won't lie these years have been tough for many of us but we always succeed in the end. </p>
+<p>We specialise in software solutions such as virus prevention and software development which helps to not only protect our users data and improve their overall experience. We also help to fix bugs that our users are experiencing on there devices which could impact the security and usability of those devices.</p>
+</div>
+
+<div class="Piechart"> <!--Piechart D3-->
+  <h3 style="text-align:center">Monthly Users</h3>
+<svg style="display: block;margin: 0 auto;">
+  <g id="canvas">
+    <g id="art"/>
+    <g id="labels"/>
+  </g>
+</svg>
+</div>
+
+<script>
+//chart data
+var data = [
+  {name: 'Mac OS X', value: 25},
+  {name: 'Unix', value: 15},
+  {name: 'MS-DOS', value: 20},
+  {name: 'Windows', value: 39}
+  
+];
+
+data.sort(function(a, b){
+    return b.value - a.value;
+});
+
+//svg for chart
+var svg = d3.select('svg'),
+    canvas = d3.select('#canvas'),
+    art = d3.select('#art'),
+    labels = d3.select('#labels');
+
+var d3Pie = d3.layout.pie();
+d3Pie.value(function(d) {
+    return d.value;
+});
+
+// chart dimension
+var pieD3 = {
+  height: 500,
+  width: 600,
+  innerRadius: 50,
+  outerRadius: 150,
+  labelRadius: 180
+};
+
+svg.attr({
+  height: pieD3.height,
+  width: pieD3.width
+});
+
+canvas.attr('transform', 'translate(' + (pieD3.width/2) + ', ' + (pieD3.height/2) + ')');
+
+//provides the donut shape to the arc
+var pieData = d3Pie(data);
+
+var pieArc = d3.svg.arc()
+                .innerRadius(pieD3.innerRadius)
+                .outerRadius(pieD3.outerRadius);
+
+
+var colors = d3.scale.category10();
+
+var enteringArcs = art.selectAll('.wedge').data(pieData).enter();
+
+enteringArcs.append('path')
+            .attr('class', 'wedge')
+            .attr('d', pieArc)
+            .style('fill', function(d, i){ return colors(i); });
+
+
+
+var enteringLabels = labels.selectAll('.label').data(pieData).enter();
+var labelGroups = enteringLabels.append('g').attr('class', 'label');
+
+var lines = labelGroups.append('line').attr({
+  x1: function(d, i) {
+    return pieArc.centroid(d)[0];
+  },
+  y1: function(d) {
+    return pieArc.centroid(d)[1];
+  },
+  x2: function(d) {
+    var centroid = pieArc.centroid(d),
+        midAngle = Math.atan2(centroid[1], centroid[0]);
+    return Math.cos(midAngle) * pieD3.labelRadius;
+  },
+  y2: function(d) {
+    var centroid = pieArc.centroid(d),
+        midAngle = Math.atan2(centroid[1], centroid[0]);
+    return Math.sin(midAngle) * pieD3.labelRadius;
+  },
+  
+  'class': 'label-line',
+  'stroke': function(d, i) {
+    return colors(i);
+  }
+});
+//text
+var textLabels = labelGroups.append('text').attr({
+    x: function(d) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          x = Math.cos(midAngle) * pieD3.labelRadius,
+          sign = x > 0? 1: -1;
+      return x + (5*sign);
+    },
+  
+    y: function(d) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          y = Math.sin(midAngle) * pieD3.labelRadius;
+      return y;
+    },
+  
+    'text-anchor': function(d) {
+      var centroid = pieArc.centroid(d),
+          midAngle = Math.atan2(centroid[1], centroid[0]),
+          x = Math.cos(midAngle) * pieD3.labelRadius;
+      return x > 0? 'start' : 'end';
+    },
+  
+    'class': 'label-text'
+}).text(function(d){
+  return d.data.name + ' ( ' + d.data.value + ' ) ';
+})
+
+
+// relaxing label
+var alpha = 0.5,
+    spacing = 15;
+
+function relax() {
+  var again = false;
+  textLabels.each(function(d) {
+       var a = this,
+           da = d3.select(a),
+           y1 = da.attr('y');
+        textLabels.each(function(d) {
+           var b = this;
+            if (a === b) {
+              return ;
+            }
+          
+            db = d3.select(b);
+            if (da.attr('text-anchor') !== db.attr('text-anchor')) {
+              return ;
+            }
+          
+            var y2 = db.attr('y');
+            deltaY = y1 - y2;
+            
+            if (Math.abs(deltaY) > spacing) {
+              return ;
+            }
+          
+            again = true;
+            sign = deltaY > 0? 1: -1;
+            var adjust = sign * alpha;
+            da.attr('y', +y1 + adjust);
+            db.attr('y', +y2 - adjust);
+        });
+  });
+  
+  if (again) {
+      var labelElements = textLabels[0];
+      lines.attr('y2', function(d, i) {
+          var labelForLine = d3.select(labelElements[i]);
+          return labelForLine.attr('y');
+      });
+      setTimeout(relax, 20);
+  }
+}
+
+relax();
+</script>
+<br>
+
+<div class="container-1">
+<h1 id="about-title">What are our goals?</h1>
+<br>
+<ul style="width: 90%; margin: auto; font-size: 20px;">
+  <li><p>To be the leader in all technological solutions whether they be virus prevention or systems errors</p></li>
+  <li><p>To ensure the highest standard of work and productivity possible.</p></li>
+  <li><p>To provide users with the best experience they can recieve whilst using our app.</p></li>
+  <li><p>Obtain stellar services within tight timeframes, at a cost that represents the best possible value to our customers</p></li>
+  <li><p>Help push the industry into the future</p></li>
+</ul>
+</div>
+
+
+ 
+
+
+
+{% endblock content %}
+
+{% block footer %}
+  <footer style="text-align: center">
+        <p>© 2018 UniAttract</p>
+    </footer>
+{% endblock footer %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Blog-Extra{% endblock title %}
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p><!--Name of user logged in-->
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post"><!--logout show if logged in-->
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+{% block content %}
+  <div class="blogs_det" style="margin: 0">
+    <div class="blog_det" >
+      <h2 style="font-size: 35px;text-align: center ">{{blog.title}}</h2> <!--Show the rest of the blog-->
+      <p style="font-size: 20px;text-align: center">{{blog.body}}</p><!--blog main text -->
+      <p style="font-size: 20px;text-align: center">{{blog.date}}</p><!--date published-->
+    </div>
+   <div class="comments">
+      <h1>Leave us a comment</h1>
+        <p>Number of comments {{ blog.comment.count }}</p>
+        <a href="{% url 'blog:comment' slug=blog.slug %}">Make comment</a>
+    {% for comments in blog.comment.all %}
+        <p style="font-size: 20px;text-align: center">{{ comments.user }}</p><!--author of comment-->
+        <p style="font-size: 20px;text-align: center">{{ comments.body }}</p><!--comment text-->
+        <p style="font-size: 20px;text-align: center">{{ comments.created }}</p><!--time made-->
+    {% empty %}
+        <p>Be the first to leave a comment</p><!--Show if no comments-->
+    {% endfor %}
+  </div>
+  </div>
+
+{% endblock content %}
+
+{% block footer %}
+  <footer style="text-align: center">
+        <p>© 2018 UniAttract</p>
+    </footer>
+{% endblock footer %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Blog{% endblock title %}
+
+{% block nav %}
+
+<div id="sidebar">
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/poll/">Polls</a> </li>
+  <li><a href="/support/">Support Us</a></li>
+  <li><a href="/accounts/signup/">Sign Up</a></li>
+  <li><a href="/accounts/login/">Login</a></li>
+  <li><a href="/contact/contact/">Contact Us</a></li>
+</ul>
+
+<div id="sidebar-btn"><!--Sidebar icon-->
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+</div>
+
+<script>/*The jQuery will help to open and close the side nav bar*/
+  $(document).ready(function(){
+    $('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');/*--This will allow the user to open and close the side bar when clicking on the icon--*/
+  });
+  });
+</script>
+{% endblock nav %}
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+
+
+{% block content %}
+
+	<div class="blog-header">
+  		<h1>Blog</h1>
+	</div>
+
+	<div class="wrapper">
+	<div class="blogs">
+		{% for blog in blog %}
+			<div class="blog">
+				<h2><a href="{% url 'blog:detail' slug=blog.slug %}">{{blog.title}}</a></h2>
+				<p>{{blog.snip}}</p>
+				<p>{{blog.date}}</p>
+			</div>
+		{% endfor %}
+
+	</div>
+	</div>	
+{% endblock content %}
+

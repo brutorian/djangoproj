@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Pay Success{% endblock title %}
+
+{% block nav %}
+
+<div id="sidebar">
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/poll/">Polls</a> </li>
+  <li><a href="/support/">Support Us</a></li>
+  <li><a href="/accounts/signup/">Sign Up</a></li>
+  <li><a href="/accounts/login/">Login</a></li>
+  <li><a href="/contact/contact/">Contact Us</a></li>
+</ul>
+
+<div id="sidebar-btn"><!--Sidebar icon-->
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+</div>
+
+<script>/*The jQuery will help to open and close the side nav bar*/
+  $(document).ready(function(){
+    $('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');/*--This will allow the user to open and close the side bar when clicking on the icon--*/
+  });
+  });
+</script>
+{% endblock nav %}
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+
+
+{% block content %}
+<h1 style="text-align: center">Thank you for the donation!</h1>
+    <br>
+    <h2 style="text-align: center">The £19.99 you donated today will allow us to continue bringing new updates and features to bring you the best experience that we can!</h2>
+{% endblock content %}
+

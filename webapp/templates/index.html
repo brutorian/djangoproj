@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+
+{% block nav %}
+  
+
+<div id="sidebar">
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/blog/">Blog</a></li>
+  <li><a href="/poll/">Polls</a> </li>
+  <li><a href="/support/">Support Us</a></li>
+  <li><a href="/accounts/signup/">Sign Up</a></li>
+  <li><a href="/accounts/login/">Login</a></li>
+  <li><a href="/contact/contact/">Contact Us</a></li>
+</ul>
+
+<div id="sidebar-btn"><!--Sidebar icon-->
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+</div>
+
+<script>/*The jQuery will help to open and close the side nav bar*/
+  $(document).ready(function(){
+    $('#sidebar-btn').click(function(){
+    $('#sidebar').toggleClass('visible');/*--This will allow the user to open and close the side bar when clicking on the icon--*/
+  });
+  });
+</script>
+{% endblock nav %}
+
+{% block log %}
+{% if user.is_authenticated %}
+ <p style="margin-left: 50px">Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% endif %}﻿
+<nav>
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+      <form class="logout-link" action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="margin: 20px; background: none; border:none; font-size: 1.2em; cursor: pointer;">Logout</button>
+      </form>
+    </li>
+    {% else %}
+    <li><a href="{% url 'accounts:login' %}" style="color: #000; font-size: 1.2em; margin: 20px; cursor: pointer" >Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock log %}
+
+
+
+{% block content %}
+
+<header>
+  <h1 style="text-align: center">Unicorn Attractor</h1></header>
+<article>
+  <p style="text-align: center; font-size:30px">Welcome to Unicorn Attractor. We are the number one innovative and software solutions company in the United Kingdom. We aim to help people with their issues related to software problems and also computer corruption.</p>
+  <br>
+  <p style="text-align: center; font-size:24px">We're here for you and to make your life just that bit easier.</p>
+</article>
+
+
+<div class="improvements" style="text:fill, #555">
+<figure>
+  <figcaption>Number of on going User issuse fixes </figcaption>
+<!--A css graph-->
+<svg class="chart" width="420" height="150" aria-labelledby="title" role="img">
+  <g class="bar">
+    <rect width="110" height="25"></rect>
+    <text x="120" y="10" dy=".35em">7 Pending</text>
+  </g>
+  <g class="bar">
+    <rect width="90" height="25" y="30"></rect>
+    <text x="120" y="40" dy=".35em">5 Ongoing</text>
+  </g>
+  <g class="bar">
+    <rect width="100" height="25" y="60"></rect>
+    <text x="120" y="70" dy=".35em">6 Completed</text>
+  </g>
+  <g class="bar">
+    <rect width="80" height="25" y="90"></rect>
+    <text x="120" y="100" dy=".35em">4 Unfinished</text>
+  </g>
+</svg>
+</figure>
+</div>
+{% endblock content %}
+
+{% block footer %}
+  <footer style="text-align: center">
+        <p>© 2018 UniAttract</p>
+    </footer>
+{% endblock footer %}
+
