@@ -33,7 +33,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['https://djangounit.herokuapp.com/']
 
 STATICFILES_DIRS = ["/Project3/Project3/static"]
 
