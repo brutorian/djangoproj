@@ -115,10 +115,10 @@ Pycharm/Sublime:
 2. Open the link in the terminal and you'll be directed to the page.
 
 Github:
-Follow the github deployment process also you can see it here().
+Follow the github deployment process also you can see it here(https://github.com/brutorian/djangoproj).
 
 Heroku:
-Follow the heroku deployment process also you can see it here().
+Follow the heroku deployment process also you can see it here(https://djangounit.herokuapp.com/).
 
 ### Deployment
 Github:
@@ -131,7 +131,7 @@ Github:
 
 Heroku:
 1. Create a heroku account and log in, to log in you'll be required to type in "heroku login" in your terminal. Once the login has been verified you'll be logged in.
-2. Go to the heroku dashboard, click on create new app, give it a name, select eu region then click create app.
+2. Go to the heroku dashboard, click on create new app, give it a name, select eu region then click create app from there you can also connect your github repository.
 3. Add postgresql to the add on link in the resources tab
 4. Go to settings and comment out the sqlite database like so:
 """DATABASES = {
