@@ -162,7 +162,11 @@ This'll link your database up to the postgres one.
 
 
 
-## Credits
+### Credits
+• Antonija Simic main online support tutor
+• Online tutor Haley helped with upload issues I had
+• Online tutor Nakita helped with upload issues
+• Online tutor Michael helped with blog issues
 
 ### Media
 The photos used in this site were obtained from :
